@@ -529,6 +529,14 @@ $('.logs').each(function () {
     return str
   }
 
+  var socket = io()
+  socket.on('log', function (log) {
+    console.log('log', log)
+  })
+  socket.on('connect', function () {
+    console.error('connected')
+  })
+
   var timeout
   function poll () {
     if (updating) return

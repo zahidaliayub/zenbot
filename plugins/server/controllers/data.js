@@ -96,4 +96,29 @@ module.exports = function container (get, set) {
         res.end()
       })
     })
+    .get('/logs/data', function (req, res, next) {
+      var params = {
+        query: {
+          app: get('zenbrain:app_name')
+        },
+        limit: c.log_query_limit,
+        sort: {$natural: -1}
+      }
+      if (req.query.newest_time) {
+        params.query.time = {
+          $gt: parseInt(req.query.newest_time, 10)
+        }
+      }
+      else if (req.query.oldest_time) {
+        params.query.time = {
+          $lte: parseInt(req.query.oldest_time, 10)
+        }
+      }
+      get('db.logs').select(params, function (err, logs) {
+        if (err) return next(err)
+        res.json({
+          logs: logs
+        })
+      })
+    })
 }
