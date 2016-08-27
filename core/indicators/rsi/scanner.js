@@ -139,7 +139,7 @@ module.exports = function container (get, set, clear) {
               r.value = n(100).subtract(n(100).divide(n(1).add(r.relative_strength))).value()
             }
             //console.error(gain_sum, avg_gain, loss_sum, avg_loss, avg_gain_2, avg_loss_2, relative_strength)
-            r.ansi = n(r.value).format('0')[r.value > 70 ? 'green' : r.value < 30 ? 'red' : 'white']
+            r.ansi = n(r.value).format('0')[r.value > 70 ? 'green' : r.value < 30 ? 'red' : 'white'] + ('x' + r.samples).grey
             // calc finshed.
             //get('logger').info('RSI', get_tick_str(tick.id), 'computed'.grey, r, r.ansi)
             sub_done()
