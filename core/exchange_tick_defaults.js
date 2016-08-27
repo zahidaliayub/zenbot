@@ -1,5 +1,5 @@
 module.exports = function container (get, set, clear) {
-  return function tick_defaults () {
+  return function () {
     return {
       volume: 0,
       count: 0,

@@ -30,7 +30,7 @@ module.exports = function container (get, set, clear) {
     var dominant_vol = (buy_ratio < 0.5 ? n(vol).subtract(buy_vol) : n(buy_vol)).format('0.000')
     var ticker = (dominant_side + ' ' + z(12, dominant_vol, ' ')).grey + ' at '.grey + z(12, format_currency(avg_price, currency), ' ').grey + ' ' + (asset + '/' + currency).grey
     ticker = get_timestamp(max_time).grey + ' ' + ticker
-    var tick_str = get_tick_str(app_name + ':' + tb(max_time).resize(c.bucket_size).toString())
+    var tick_str = get_tick_str(app_name + ':' + tb(max_time).resize(c.reducer_sizes[0]).toString())
     get('logger').info(slug, z(12, tick_str), z(7, trades.length, ' '), 'trades.'.grey, ticker)
   }
 }

@@ -4,8 +4,9 @@ var n = require('numbro')
 module.exports = function container (get, set, clear) {
   var trades_processed = []
   var log_trades = get('utils.log_trades')
-  var tick_defaults = get('tick_defaults')
+  var exchange_tick_defaults = get('exchange_tick_defaults')
   var first_run = false
+  var get_tick_str = get('utils.get_tick_str')
   return function thought_reducer (g, cb) {
     var c = get('config')
     if (first_run) {
@@ -23,7 +24,7 @@ module.exports = function container (get, set, clear) {
       first_run = false
     }
     var tick = g.tick, thoughts = g.thoughts
-    //get('logger').info('trade_reducer', g.bucket.id)
+    //get('logger').info('trade_reducer', get_tick_str(tick.id))
     tick.data.trades || (tick.data.trades = {})
     var d = tick.data.trades
     thoughts.forEach(function (thought) {
@@ -35,7 +36,7 @@ module.exports = function container (get, set, clear) {
       var e = trade.exchange
       d[e] || (d[e] = {})
       var pair = trade.asset + '-' + trade.currency
-      d[e][pair] || (d[e][pair] = tick_defaults())
+      d[e][pair] || (d[e][pair] = exchange_tick_defaults())
       var de = d[e][pair]
       de.volume = n(de.volume).add(trade.size).value()
       de.count++

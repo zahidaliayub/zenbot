@@ -27,7 +27,7 @@ module.exports = function (c) {
   c.ansi_graph_decay = 0.01
 
   // reporter
-  c.reporter_sizes = ['1m']
+  c.reporter_sizes = ["1m"]
   c.price_reporter_length = 12
   c.reporter_cols = [
     "tick_id",
@@ -42,9 +42,9 @@ module.exports = function (c) {
     "roi"
   ]
   c.trade_log = false
-  c.reducer_report_interval = 30000
-  c.trade_reducer_log = false
-  c.trade_reducer_log_interval = 30000
+  c.reducer_report_interval = 10000
+  c.trade_reducer_log = true
+  c.trade_reducer_log_interval = 10000
   c.min_log_trades = 2
 
   // backfiller
@@ -57,19 +57,13 @@ module.exports = function (c) {
   c.sim_input_limit = 12
 
   // zenbrain engine stuff
-  c.bucket_size = "1m"
   c.reducer_limit = 1500 // how many thoughts to process per reduce run
   c.reducer_sizes = ["1m", "5m", "15m", "1h", "6h", "1d"]
   c.save_state_interval = 10000 // save state
-  c.parallel_limit = 8 // run this many concurrent tasks
   c.reduce_timeout = 200
-  c.run_limit = 100
-  c.lock_timeout = 60000
-  c.lock_backoff = 20
-  c.lock_tries = 100
   c.passive_update_timeout = 5000
   c.return_timeout = 60000
-  c.brain_speed_ms = 5000
+  c.brain_speed_ms = 1000
   c.reducer_perf_report_min = 2
   c.reducer_perf_report_timeout = 30000
   return c
