@@ -218,7 +218,7 @@ module.exports = function container (get, set, clear) {
         return cb()
       }
       if (rs.trend && !rs.trend_warning) {
-        get('logger').info('trader', get_tick_str(tick.id), c.default_selector, ('acting on trend: ' + rs.trend + '!').yellow, {feed: 'trader'})
+        //get('logger').info('trader', get_tick_str(tick.id), c.default_selector, ('acting on trend: ' + rs.trend + '!').yellow, {feed: 'trader'})
         if (!rs.balance) {
           get('logger').info('trader', get_tick_str(tick.id), c.default_selector, ('no balance to act on trend: ' + rs.trend + '!').red, {feed: 'trader'})
         }
