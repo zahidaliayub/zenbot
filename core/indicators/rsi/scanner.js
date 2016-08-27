@@ -39,7 +39,8 @@ module.exports = function container (get, set, clear) {
           // if the prev tick has rsi calculated, use the prev avg's
           // this is what causes smoothing in the algorithm.
           if (prev_tick && prev_tick.rsi) {
-            with_last_avg(prev_tick.close, prev_tick.rsi.avg_gain, prev_tick.rsi.avg_loss)
+            //console.error('prev_tick', prev_tick)
+            with_last_avg(prev_tick.close, prev_tick.rsi.avg_gain, prev_tick.rsi.avg_loss, prev_tick.rsi.samples)
           }
           // else we need to average the last 14 ticks
           else {
@@ -78,12 +79,13 @@ module.exports = function container (get, set, clear) {
               return o(tick, selector + '.close')
             })
             r.close_lookback = close_lookback
+            r.samples = close_lookback.length
             if (close_lookback.length < c.rsi_periods) {
               // not enough lookback to start first tick.
               //get('logger').info('RSI', get_tick_str(tick.id), ('not enough lookback: ' + close_lookback.length).grey)
               return sub_done()
             }
-            last_close = 0
+            var last_close = 0
             var gain_sum = close_lookback.reduce(function (prev, curr) {
               if (!last_close) {
                 last_close = curr
@@ -93,7 +95,7 @@ module.exports = function container (get, set, clear) {
               last_close = curr
               return prev + gain
             }, 0)
-            var avg_gain = r.samples ? n(gain_sum).divide(r.samples).value() : 0
+            var avg_gain = n(gain_sum).divide(r.samples).value()
             last_close = 0
             var loss_sum = close_lookback.reduce(function (prev, curr) {
               if (!last_close) {
@@ -104,11 +106,12 @@ module.exports = function container (get, set, clear) {
               last_close = curr
               return prev + loss
             }, 0)
-            var avg_loss = r.samples ? n(loss_sum).divide(r.samples).value() : 0
+            var avg_loss = n(loss_sum).divide(close_lookback.length).value()
             // now we have a prev value to work with
             with_last_avg(last_close, avg_gain, avg_loss)
           }
-          function with_last_avg (last_close, last_avg_gain, last_avg_loss) {
+          function with_last_avg (last_close, last_avg_gain, last_avg_loss, samples) {
+            //console.error('with_last_avg', arguments)
             r.last_close = last_close
             // calculate current gains and losses
             var current_gain, current_loss
@@ -122,6 +125,9 @@ module.exports = function container (get, set, clear) {
             // average the last avgs with current (smoothing)
             r.avg_gain = n(last_avg_gain).multiply(c.rsi_periods - 1).add(current_gain).divide(c.rsi_periods).value()
             r.avg_loss = n(last_avg_loss).multiply(c.rsi_periods - 1).add(current_loss).divide(c.rsi_periods).value()
+            r.last_avg_gain = last_avg_gain
+            r.last_avg_loss = last_avg_loss
+            r.samples = (samples || r.samples) + 1
             // prevent divide by zero
             if (r.avg_loss === 0) {
               r.value = r.avg_gain ? 100 : 50
@@ -135,7 +141,7 @@ module.exports = function container (get, set, clear) {
             //console.error(gain_sum, avg_gain, loss_sum, avg_loss, avg_gain_2, avg_loss_2, relative_strength)
             r.ansi = n(r.value).format('0')[r.value > 70 ? 'green' : r.value < 30 ? 'red' : 'white']
             // calc finshed.
-            get('logger').info('RSI', get_tick_str(tick.id), 'computed'.grey, r.ansi)
+            //get('logger').info('RSI', get_tick_str(tick.id), 'computed'.grey, r, r.ansi)
             sub_done()
           }
         })

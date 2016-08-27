@@ -53,12 +53,12 @@ module.exports = function container (get, set, clear) {
       rs.asset = sMatch[2]
       rs.currency = sMatch[3]
       if (options.verbose && get('command') === 'run') {
-        //get('logger').info('trader', get_tick_str(tick.id), c.default_selector, 'running logic'.grey, {feed: 'trader'})
+        get('logger').info('trader', get_tick_str(tick.id), c.default_selector, 'running logic'.grey, {feed: 'trader'})
       }
       rs.rsi_period = '1h'
       rs.rsi_up = 70
       rs.rsi_down = 30
-      rs.check_period = '5m'
+      rs.check_period = '1m'
       rs.selector = 'data.trades.' + c.default_selector
       rs.trade_pct = 0.98 // trade % of current balance
       rs.fee_pct = 0.0025 // apply 0.25% taker fee
@@ -139,7 +139,7 @@ module.exports = function container (get, set, clear) {
       rs.ticks || (rs.ticks = 0)
       rs.progress || (rs.progress = 0)
       if (!rs.market_price) {
-        //get('logger').info('trader', ('no close price for tick ' + tick.id).red, {feed: 'trader'})
+        get('logger').info('trader', ('no close price for tick ' + tick.id).red, {feed: 'trader'})
         return cb()
       }
       if (!rs.balance) {
